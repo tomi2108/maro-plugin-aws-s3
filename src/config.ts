@@ -3,7 +3,7 @@ import z from "zod/v4";
 import { ConfigSection } from "../../../dist/lib";
 import { ConfigHelp } from "../../../dist/lib/config/interface";
 
-export type Bucket = {
+export type BucketConfig = {
   accessKey: string;
   secretKey: string;
   bucket: string;

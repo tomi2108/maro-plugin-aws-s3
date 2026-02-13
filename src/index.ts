@@ -1,6 +1,7 @@
 import { PluginExport } from "@maro/maro";
 
 import { ListCommand } from "./commands/list";
+import { GetMetadata } from "./commands/metadata";
 import { S3Config } from "./config";
 
 const Plugin: PluginExport = {
@@ -12,7 +13,8 @@ const Plugin: PluginExport = {
     {
       name: "s3",
       subcommands: [
-        ListCommand
+        ListCommand,
+        GetMetadata
       ]
     }
   ]

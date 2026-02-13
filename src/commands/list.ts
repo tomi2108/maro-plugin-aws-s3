@@ -1,9 +1,8 @@
-import { Bucket } from "src/config";
-
-import { ListObjectsV2Command } from "@aws-sdk/client-s3";
 import { Command, Config, ValidateConfig } from "@maro/maro";
 
-import { s3 } from "../s3";
+import { BucketConfig } from "../config";
+import { Bucket } from "../lib/bucket";
+import { bToGB } from "../lib/utils";
 
 export const ListCommand: Command = {
   name: "list",
@@ -13,24 +12,21 @@ export const ListCommand: Command = {
     const ui = ctx.ui;
     const log = ctx.logger;
     new ValidateConfig({ keys: ["s3.buckets"] }).run();
-    const buckets = config.get("s3.buckets") as Record<string, Bucket>;
+    const buckets_config = config.get("s3.buckets") as Record<string, BucketConfig>;
+    const buckets = Object.entries(buckets_config).map(([name, opts]) => new Bucket(name, opts));
 
-    const choices = Object.entries(buckets).map(([name, value]) => ({
-      toChoice() {
-        return { name };
-      },
-      ...value
-    }));
-
-    if (choices.length === 0) {
+    if (buckets.length === 0) {
       log.warning("No buckets configured");
       return;
     }
 
-    const bucket = await ui.promptChoice(choices, { message: "Choose s3 bucket" });
-    const client = s3({ accesKey: bucket.accessKey, secretKey: bucket.secretKey });
-    const command = new ListObjectsV2Command({ Bucket: bucket.bucket });
-    const res = await client.send(command);
-    console.log(res);
+    const bucket = await ui.promptChoice(buckets, { message: "Choose s3 bucket" });
+    const files = await bucket.getFiles();
+    const total_size = files.reduce((acc, f) => f.size + acc, 0);
+
+    files?.forEach((f) => console.log(f.toString()));
+    console.log("-".repeat(100));
+    console.log(`Total size: ${bToGB(total_size).toFixed(2)}Gb`);
+    console.log("-".repeat(100));
   }
 };
