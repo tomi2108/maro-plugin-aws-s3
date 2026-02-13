@@ -1,5 +1,6 @@
 import { PluginExport } from "@maro/maro";
 
+import { DeleteCommand } from "./commands/delete";
 import { ListCommand } from "./commands/list";
 import { GetMetadata } from "./commands/metadata";
 import { UploadCommand } from "./commands/upload";
@@ -16,7 +17,8 @@ const Plugin: PluginExport = {
       subcommands: [
         ListCommand,
         GetMetadata,
-        UploadCommand
+        UploadCommand,
+        DeleteCommand
       ]
     }
   ]

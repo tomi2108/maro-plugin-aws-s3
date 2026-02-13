@@ -1,4 +1,4 @@
-import { HeadObjectCommand, ListObjectsV2Command, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { DeleteObjectCommand, HeadObjectCommand, ListObjectsV2Command, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { File, loading } from "@maro/maro";
 
 import { BucketConfig } from "../config";
@@ -52,6 +52,7 @@ export class Bucket {
     return files;
   }
 
+  @loading("Uploading:", (file) => file)
   async upload(file: File<unknown>): Promise<S3File> {
     const command = new PutObjectCommand({
       Bucket: this.bucket,
@@ -62,5 +63,14 @@ export class Bucket {
     await this.s3.send(command);
     const head = await this.s3.send(headCommand);
     return S3File.fromS3Response(this.s3, this.bucket, { ...head, Key: file.name(), Size: head.ContentLength });
+  }
+
+  @loading("Deleting:", (file) => file)
+  async delete(file: S3File) {
+    const command = new DeleteObjectCommand({
+      Bucket: this.bucket,
+      Key: file.name
+    });
+    await this.s3.send(command);
   }
 }

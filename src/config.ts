@@ -29,7 +29,13 @@ export class S3Config implements ConfigSection {
   }
 
   help(): ConfigHelp[] {
-    return [];
+    return [
+      { key: "endpoint", description: "S3 endpoint URL" },
+      { key: "buckets", description: "Named S3 bucket configurations" },
+      { key: "buckets.${name}.accessKey", description: "Access key for the bucket" },
+      { key: "buckets.${name}.secretKey", description: "Secret key for the bucket" },
+      { key: "buckets.${name}.bucket", description: "Bucket name" }
+    ];
   }
 
   async setup() {
