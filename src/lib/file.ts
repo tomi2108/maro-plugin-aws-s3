@@ -6,7 +6,11 @@ export class S3File {
 
   static fromS3Response(s3: S3Client, bucket: string, res: _Object) {
     const { Key, LastModified, Size } = res;
-    if (!Key || !LastModified || Size === undefined) throw new Error("Invalid s3 response");
+    if (
+      !Key
+      || !LastModified
+      || Size === undefined
+    ) throw new Error("Invalid s3 response");
 
     return new S3File(
       s3,

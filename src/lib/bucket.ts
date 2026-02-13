@@ -1,5 +1,5 @@
-import { ListObjectsV2Command, S3Client } from "@aws-sdk/client-s3";
-import { loading } from "@maro/maro";
+import { HeadObjectCommand, ListObjectsV2Command, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { File, loading } from "@maro/maro";
 
 import { BucketConfig } from "../config";
 import { s3 } from "../s3";
@@ -52,4 +52,15 @@ export class Bucket {
     return files;
   }
 
+  async upload(file: File<unknown>): Promise<S3File> {
+    const command = new PutObjectCommand({
+      Bucket: this.bucket,
+      Key: file.name(),
+      Body: file.formatter.toString(file.read())
+    });
+    const headCommand = new HeadObjectCommand({ Bucket: this.bucket, Key: file.name() });
+    await this.s3.send(command);
+    const head = await this.s3.send(headCommand);
+    return S3File.fromS3Response(this.s3, this.bucket, { ...head, Key: file.name(), Size: head.ContentLength });
+  }
 }
