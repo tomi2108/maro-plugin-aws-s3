@@ -1,6 +1,6 @@
 {
   "name": "maro-plugin-aws-s3",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "./dist/lib/index.js",
   "type": "commonjs",
   "scripts": {
