@@ -1,7 +1,6 @@
 import z from "zod/v4";
 
-import { ConfigSection } from "../../../dist/lib";
-import { ConfigHelp } from "../../../dist/lib/config/interface";
+import { ConfigHelp, ConfigSection } from "@maro/maro";
 
 export type BucketConfig = {
   accessKey: string;
@@ -30,11 +29,11 @@ export class S3Config implements ConfigSection {
 
   help(): ConfigHelp[] {
     return [
-      { key: "endpoint", description: "S3 endpoint URL" },
-      { key: "buckets", description: "Named S3 bucket configurations" },
-      { key: "buckets.${name}.accessKey", description: "Access key for the bucket" },
-      { key: "buckets.${name}.secretKey", description: "Secret key for the bucket" },
-      { key: "buckets.${name}.bucket", description: "Bucket name" }
+      { key: "endpoint", description: "S3 endpoint URL", type: "string" },
+      { key: "buckets", description: "Named S3 bucket configurations", type: "object" },
+      { key: "buckets.${name}.accessKey", description: "Access key for the bucket", type: "string" },
+      { key: "buckets.${name}.secretKey", description: "Secret key for the bucket", type: "string" },
+      { key: "buckets.${name}.bucket", description: "Bucket name", type: "string" }
     ];
   }
 
