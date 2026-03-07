@@ -9,7 +9,7 @@ export type BucketConfig = {
 };
 
 const schema = z.object({
-  endpoint: z.string(),
+  endpoint: z.string().optional(),
   buckets: z.record(
     z.string(),
     z.object({
